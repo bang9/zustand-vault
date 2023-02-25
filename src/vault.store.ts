@@ -1,5 +1,5 @@
-import { create as createStore } from 'zustand';
 import type { StoreApi, UseBoundStore } from 'zustand';
+import { create as createStore } from 'zustand';
 
 type StoreCreateParams<T> = {
   (
@@ -46,15 +46,16 @@ type ExtractStore<U, K extends keyof U> = U extends { [key in K]: infer S } ? S 
  * ```
  * */
 export function storeBuilder<U, VS extends GetVaultStore<U> = GetVaultStore<U>, Name extends keyof U = keyof U>() {
-  const vaultStore: Partial<VS> = {};
+  return new BuildHelper<U>();
+}
 
-  return {
-    put<K extends Name, Store extends StoreCreateParams<ExtractStore<U, K>>>(name: K, value: Store): typeof this {
-      vaultStore[name] = createStore(value) as VS[K];
-      return this;
-    },
-    get() {
-      return vaultStore as VS;
-    },
-  };
+class BuildHelper<U, VS extends GetVaultStore<U> = GetVaultStore<U>, Name extends keyof U = keyof U> {
+  #vaultStore: Partial<VS> = {};
+  public put<K extends Name, Store extends StoreCreateParams<ExtractStore<U, K>>>(name: K, value: Store) {
+    this.#vaultStore[name] = createStore(value) as VS[K];
+    return this;
+  }
+  public get() {
+    return this.#vaultStore as VS;
+  }
 }
