@@ -10,9 +10,9 @@ The library is designed to work with TypeScript and provides a clean API for acc
 
 To use 'zustand-vault', you need to install it first. You can install it via npm or yarn. Here are the commands for both:
 
-`npm install zustand-vault`
+`npm install zustand zustand-vault`
 
-`yarn add zustand-vault`
+`yarn add zustand zustand-vault`
 
 ## Getting started
 
