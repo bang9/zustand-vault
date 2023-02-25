@@ -1,5 +1,12 @@
 
 
+# [1.1.0](https://github.com/bang9/zustand-vault/compare/v1.0.4...v1.1.0) (2023-02-25)
+
+
+### Features
+
+* added root store context ([5678235](https://github.com/bang9/zustand-vault/commit/567823559b2907f35c37e3825c733c23f05ac23f))
+
 ## [1.0.4](https://github.com/bang9/zustand-vault/compare/v1.0.3...v1.0.4) (2023-02-25)
 
 
