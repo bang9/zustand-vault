@@ -12,6 +12,8 @@ export type GetVaultStore<T> = {
   [key in keyof T]: UseBoundStore<StoreApi<T[key]>>;
 };
 
+type ExtractStore<U, K extends keyof U> = U extends { [key in K]: infer S } ? S : never;
+
 /**
  * @description
  * The storeBuilder function is a helper function provided by the zustand-vault library that simplifies the process of creating and managing Zustand stores.
@@ -43,22 +45,16 @@ export type GetVaultStore<T> = {
  *   .get();
  * ```
  * */
-export function storeBuilder<
-  StoreHooks extends Record<string, UseBoundStore<StoreApi<unknown>>>,
-  Name extends keyof StoreHooks = keyof StoreHooks,
->() {
-  const vaultStore: Partial<StoreHooks> = {};
+export function storeBuilder<U, VS extends GetVaultStore<U> = GetVaultStore<U>, Name extends keyof U = keyof U>() {
+  const vaultStore: Partial<VS> = {};
 
   return {
-    put<
-      StoreHook extends StoreHooks[Name],
-      Store extends StoreHook extends UseBoundStore<StoreApi<infer T>> ? T : never,
-    >(name: Name, value: StoreCreateParams<Store>) {
-      vaultStore[name] = createStore<Store>(value) as StoreHook;
+    put<K extends Name, Store extends StoreCreateParams<ExtractStore<U, K>>>(name: K, value: Store) {
+      vaultStore[name] = createStore(value) as VS[K];
       return this;
     },
     get() {
-      return vaultStore as StoreHooks;
+      return vaultStore as VS;
     },
   };
 }

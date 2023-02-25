@@ -53,14 +53,16 @@ import { GetVaultStore } from './vault.store';
  *   )
  * ```
  * */
-export const createVault = <T extends GetVaultStore<any>>(vaultStore: T) => {
+export const createVault = <T extends GetVaultStore<U>, U extends T extends GetVaultStore<infer X> ? X : never>(
+  vaultStore: T,
+) => {
   return {
-    useStore: (name: keyof T) => {
-      const storeHook = vaultStore[name] as T[keyof T];
-      return storeHook();
+    useStore: <K extends keyof U>(name: K): U[K] => {
+      const storeHook = vaultStore[name];
+      return storeHook() as U[K];
     },
     store: <K extends keyof T>(name: K): Pick<T[K], 'subscribe' | 'setState' | 'getState' | 'destroy'> => {
-      return vaultStore[name] as T[keyof T];
+      return vaultStore[name];
     },
   };
 };
