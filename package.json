@@ -1,0 +1,29 @@
+{
+  "name": "zustand-vault",
+  "version": "1.0.0",
+  "author": "bang9 <gusrn1423@naver.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:bang9/zustand-vault.git"
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "sideEffects": false,
+  "license": "MIT",
+  "peerDependencies": {
+    "zustand": ">=4.3.3"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.4",
+    "zustand": "^4.3.3"
+  },
+  "keywords": [
+    "react",
+    "state",
+    "manager",
+    "management",
+    "redux",
+    "store",
+    "zustand"
+  ]
+}
