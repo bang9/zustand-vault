@@ -1,11 +1,13 @@
 import type { StoreApi, UseBoundStore } from 'zustand';
 import { create as createStore } from 'zustand';
 
-type StoreCreateParams<T> = {
-  (
-    set: (partial: T | Partial<T> | ((state: T) => T | Partial<T>), replace?: boolean | undefined) => void,
-    get: () => T,
-  ): T;
+type StoreCreateParams<VS, T> = {
+  (params: {
+    set: (partial: T | Partial<T> | ((state: T) => T | Partial<T>), replace?: boolean | undefined) => void;
+    get: () => T;
+    vaultStore: VS;
+    store: StoreApi<T>;
+  }): T;
 };
 
 export type GetVaultStore<T> = {
@@ -36,7 +38,7 @@ type ExtractStore<U, K extends keyof U> = U extends { [key in K]: infer S } ? S 
  * };
  *
  * const vaultStore = storeBuilder<VaultStore>()
- *   .put('toast', (set) => ({
+ *   .set('toast', ({ set }) => ({
  *     visible: true,
  *     show: () => set({ visible: true }),
  *     hide: () => set({ visible: false }),
@@ -46,16 +48,22 @@ type ExtractStore<U, K extends keyof U> = U extends { [key in K]: infer S } ? S 
  * ```
  * */
 export function storeBuilder<U, VS extends GetVaultStore<U> = GetVaultStore<U>, Name extends keyof U = keyof U>() {
-  return new BuildHelper<U>();
+  return new VaultContext<U>();
 }
 
-class BuildHelper<U, VS extends GetVaultStore<U> = GetVaultStore<U>, Name extends keyof U = keyof U> {
-  #vaultStore: Partial<VS> = {};
-  public put<K extends Name, Store extends StoreCreateParams<ExtractStore<U, K>>>(name: K, value: Store) {
-    this.#vaultStore[name] = createStore(value) as VS[K];
+class VaultContext<U, VS extends GetVaultStore<U> = GetVaultStore<U>, Name extends keyof U = keyof U> {
+  private vaultStore: Partial<VS> = {};
+  public set<K extends Name, Store extends ExtractStore<U, K>, StoreParam extends StoreCreateParams<VS, Store>>(
+    name: K,
+    value: StoreParam,
+  ) {
+    this.vaultStore[name] = createStore<Store>((set, get, store) => {
+      return value({ set, get, store, vaultStore: this.vaultStore as VS });
+    }) as VS[K];
+
     return this;
   }
   public get() {
-    return this.#vaultStore as VS;
+    return this.vaultStore as VS;
   }
 }

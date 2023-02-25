@@ -25,7 +25,7 @@ import type { GetVaultStore } from './vault.store';
  * };
  *
  * const vaultStore = storeBuilder<MyStore>()
- *   .put('toast', (set) => ({
+ *   .set('toast', ({ set }) => ({
  *     visible: true,
  *     show: () => set({ visible: true }),
  *     hide: () => set({ visible: false }),

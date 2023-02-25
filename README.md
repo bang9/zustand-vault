@@ -32,7 +32,7 @@ type VaultStore = {
 };
 
 const store = storeBuilder<VaultStore>()
-  .put('counter', (set) => ({
+  .set('counter', ({ set }) => ({
     counter: 0,
     increment: () => set((state) => ({ counter: state.counter + 1 })),
     decrement: () => set((state) => ({ counter: state.counter - 1 })),
@@ -96,12 +96,12 @@ type VaultStore = {
 };
 
 const store = storeBuilder<VaultStore>()
-  .put('counter', (set) => ({
+  .set('counter', ({ set }) => ({
     counter: 0,
     increment: () => set((state) => ({ counter: state.counter + 1 })),
     decrement: () => set((state) => ({ counter: state.counter - 1 })),
   }))
-  .put('toast', (set) => ({
+  .set('toast', ({ set }) => ({
     visible: false,
     show: () => set({ visible: true }),
     hide: () => set({ visible: false }),

@@ -12,18 +12,26 @@ type Store = {
     foo(): void;
     bar(): void;
   };
+  labels: {
+    counterLabel: string;
+    testLabel: string;
+  };
 };
 
 const store = storeBuilder<Store>()
-  .put('counter', (set) => ({
+  .set('counter', ({ set }) => ({
     value: 1,
     increment: () => set((state) => ({ value: state.value + 1 })),
     decrement: () => set((state) => ({ value: state.value - 1 })),
   }))
-  .put('test', (set) => ({
+  .set('test', ({ set }) => ({
     what: 1,
     foo: () => set((state) => ({ what: state.what + 1 })),
     bar: () => set((state) => ({ what: state.what - 1 })),
+  }))
+  .set('labels', ({ vaultStore }) => ({
+    counterLabel: `counter: ${vaultStore.counter.getState().value}`,
+    testLabel: `test.what:${vaultStore.test.getState().what}`,
   }))
   .get();
 
