@@ -6,15 +6,28 @@
     "type": "git",
     "url": "git@github.com:bang9/zustand-vault.git"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "source": "./src",
+  "react-native": "./src",
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__"
+  ],
   "sideEffects": false,
   "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "build": "tsc"
+  },
   "peerDependencies": {
     "zustand": ">=4.3.3"
   },
   "devDependencies": {
     "prettier": "^2.8.4",
+    "release-it": "^15.6.0",
+    "typescript": "^4.9.5",
     "zustand": "^4.3.3"
   },
   "keywords": [
