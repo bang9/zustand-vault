@@ -89,9 +89,11 @@ type VaultStore = {
   };
   toast: {
     visible: boolean;
-    show(): void;
-    hide(): void;
     toggle(): void;
+  };
+  labels: {
+    counterLabel(): string;
+    toastLabel(): string;
   };
 };
 
@@ -103,17 +105,20 @@ const store = storeBuilder<VaultStore>()
   }))
   .set('toast', ({ set }) => ({
     visible: false,
-    show: () => set({ visible: true }),
-    hide: () => set({ visible: false }),
     toggle: () => set((state) => ({ visible: !state.visible })),
+  }))
+  .set('labels', ({ vaultStore }) => ({
+    counterLabel: () => `counter: ${vaultStore.counter.getState().value}`,
+    toastLabel: () => `toast: ${vaultStore.toast.getState().visible}`,
   }))
   .get();
 
 const vault = createVault(store);
 
 function MyComponent() {
-  const { counter, increment, decrement } = vault.useStore('counter');
+  const { increment, decrement } = vault.useStore('counter');
   const { visible, toggle } = vault.useStore('toast');
+  const { counterLabel } = vault.useStore('labels');
 
   useEffect(() => {
     console.log('getState():', vault.store('toast').getState().visible);
@@ -125,7 +130,7 @@ function MyComponent() {
 
   return (
     <div>
-      <p>Counter: {counter}</p>
+      <p>{counterLabel()}</p>
       <button onClick={increment}>Increment</button>
       <button onClick={decrement}>Decrement</button>
 
@@ -135,3 +140,41 @@ function MyComponent() {
   );
 }
 ```
+
+## Advanced Usage
+
+The `.set()` function in `storeBuilder` allows you to not only create stores, but also lazily access other stores that have been added to the builder.
+This can be useful in scenarios where you have interdependent stores or where one store needs to access data from another.
+
+For example, let's say you have two stores: `userStore` and `postStore`.
+The `postStore` needs to access data from the `userStore` to get the user's name when displaying a post.
+With the `.set()` function and the `vaultStore` parameter, you can create the `postStore` with access to the `userStore` like so:
+
+```ts
+const store = storeBuilder()
+  .set('user', ({ set }) => ({
+    name: 'John Doe',
+    setName: (name: string) => set(() => ({ name })),
+  }))
+  .set('post', ({ vaultStore }) => ({
+    title: 'My First Post',
+    get author() {
+      return vaultStore.user.getState().name;
+    },
+    // OR
+    getAuthor: () => vaultStore.user.getState().name,
+  }))
+  .get();
+```
+
+In the above example, we create the user store first and set the name property to 'John Doe'.
+Then we create the post store and access the user store's name property through the `vaultStore` parameter.
+We set the author property of the post store to the user store's name property.
+Now, whenever we access the author property of the post store, it will return 'John Doe'.
+
+This is just one example of how you can use the `.set()` function and `vaultStore` parameter to create interdependent stores.
+The possibilities are endless and can be used to create complex applications with multiple stores that interact with each other.
+
+---
+
+_written by ChatGPT_

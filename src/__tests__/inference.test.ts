@@ -2,43 +2,41 @@ import { storeBuilder } from '../vault.store';
 import { createVault } from '../vault.factory';
 
 type Store = {
+  toast: {
+    visible: boolean;
+    toggle(): void;
+  };
   counter: {
     value: number;
     increment(): void;
     decrement(): void;
   };
-  test: {
-    what: number;
-    foo(): void;
-    bar(): void;
-  };
   labels: {
-    counterLabel: string;
-    testLabel: string;
+    counterLabel(): string;
+    toastLabel(): string;
   };
 };
 
 const store = storeBuilder<Store>()
   .set('counter', ({ set }) => ({
-    value: 1,
+    value: 0,
     increment: () => set((state) => ({ value: state.value + 1 })),
     decrement: () => set((state) => ({ value: state.value - 1 })),
   }))
-  .set('test', ({ set }) => ({
-    what: 1,
-    foo: () => set((state) => ({ what: state.what + 1 })),
-    bar: () => set((state) => ({ what: state.what - 1 })),
+  .set('toast', ({ set }) => ({
+    visible: false,
+    toggle: () => set((state) => ({ visible: !state.visible })),
   }))
   .set('labels', ({ vaultStore }) => ({
-    counterLabel: `counter: ${vaultStore.counter.getState().value}`,
-    testLabel: `test.what:${vaultStore.test.getState().what}`,
+    counterLabel: () => `counter: ${vaultStore.counter.getState().value}`,
+    toastLabel: () => `toast :${vaultStore.toast.getState().visible}`,
   }))
   .get();
 
 const vault = createVault(store);
 vault.store('counter').setState({ value: 1 });
 vault.store('counter').getState().value;
-vault.store('test').getState().what;
+vault.store('toast').getState().visible;
 
 vault.useStore('counter').value;
-vault.useStore('test').what;
+vault.useStore('toast').visible;
