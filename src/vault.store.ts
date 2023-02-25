@@ -29,11 +29,11 @@ type ExtractStore<U, K extends keyof U> = U extends { [key in K]: infer S } ? S 
  *
  * @example
  * ```
- * import { storeBuilder, GetVaultStore } from 'zustand-vault';
+ * import { storeBuilder } from 'zustand-vault';
  *
- * export type VaultStore = GetVaultStore<{
+ * export type VaultStore = {
  *   toast: { visible: boolean; show(): void; hide(): void; toggle(): void };
- * }>;
+ * };
  *
  * const vaultStore = storeBuilder<VaultStore>()
  *   .put('toast', (set) => ({
@@ -49,7 +49,7 @@ export function storeBuilder<U, VS extends GetVaultStore<U> = GetVaultStore<U>, 
   const vaultStore: Partial<VS> = {};
 
   return {
-    put<K extends Name, Store extends StoreCreateParams<ExtractStore<U, K>>>(name: K, value: Store) {
+    put<K extends Name, Store extends StoreCreateParams<ExtractStore<U, K>>>(name: K, value: Store): typeof this {
       vaultStore[name] = createStore(value) as VS[K];
       return this;
     },

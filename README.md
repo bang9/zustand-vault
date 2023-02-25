@@ -21,15 +21,15 @@ To use 'zustand-vault', you need to create a store first. You can create a store
 Here's an example:
 
 ```ts
-import { storeBuilder, GetVaultStore } from 'zustand-vault';
+import { storeBuilder } from 'zustand-vault';
 
-type VaultStore = GetVaultStore<{
+type VaultStore = {
   counter: {
     counter: number;
     increment(): void;
     decrement(): void;
   };
-}>;
+};
 
 const store = storeBuilder<VaultStore>()
   .put('counter', (set) => ({
@@ -79,9 +79,9 @@ function MyComponent() {
 Here's an example code that uses 'zustand-vault' to create a store with multiple properties:
 
 ```tsx
-import { createVault, storeBuilder, GetVaultStore } from 'zustand-vault';
+import { createVault, storeBuilder } from 'zustand-vault';
 
-type VaultStore = GetVaultStore<{
+type VaultStore = {
   counter: {
     counter: number;
     increment(): void;
@@ -93,7 +93,7 @@ type VaultStore = GetVaultStore<{
     hide(): void;
     toggle(): void;
   };
-}>;
+};
 
 const store = storeBuilder<VaultStore>()
   .put('counter', (set) => ({

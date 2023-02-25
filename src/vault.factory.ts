@@ -1,4 +1,4 @@
-import { GetVaultStore } from './vault.store';
+import type { GetVaultStore } from './vault.store';
 
 /**
  * @description
@@ -18,11 +18,11 @@ import { GetVaultStore } from './vault.store';
  *
  * @example
  * ```
- * import { createVault, storeBuilder, GetVaultStore } from 'zustand-vault';
+ * import { createVault, storeBuilder } from 'zustand-vault';
  *
- * export type MyStore = GetVaultStore<{
+ * export type MyStore = {
  *   toast: { visible: boolean; show(): void; hide(): void; toggle(): void };
- * }>;
+ * };
  *
  * const vaultStore = storeBuilder<MyStore>()
  *   .put('toast', (set) => ({
