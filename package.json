@@ -19,16 +19,37 @@
   "license": "MIT",
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "tsc"
+    "build": "tsc",
+    "release": "release-it"
   },
   "peerDependencies": {
     "zustand": ">=4.3.3"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^5.1.1",
     "prettier": "^2.8.4",
     "release-it": "^15.6.0",
     "typescript": "^4.9.5",
     "zustand": "^4.3.3"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}",
+      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
+    }
   },
   "keywords": [
     "react",
